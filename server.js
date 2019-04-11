@@ -1,14 +1,15 @@
-const http = require('http');
-
-const hostname = '127.0.0.1';
-const port = 3000;
-
-const server = http.createServer((req, res) => {
-  res.statusCode = 200;
-  res.setHeader('Content-Type', 'text/plain');
-  res.end('Hello World\n');
+const SerialPort = require('serialport');
+const port = new SerialPort('/dev/ttyACM0', () => {
+  console.log('Port Opened');
 });
+port.write('1', function(err) {
+  if (err) {
+    return console.log('Error on write: ', err.message)
+  }
+  console.log('message written')
+})
 
-server.listen(port, hostname, () => {
-  console.log(`Server running at http://${hostname}:${port}/`);
-});
+// Open errors will be emitted as an error event
+port.on('error', function(err) {
+  console.log('Error: ', err.message)
+})
